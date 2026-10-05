@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Horae</title>
+<meta name="theme-color" content="#1a1833">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Horae">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icon.svg">
+<style>
+  :root{
+    --top:#1a1833; --bot:#24213d; --ink:#ecebf5; --ink-soft:rgba(236,235,245,.62);
+    --card:rgba(255,255,255,.08); --line:rgba(255,255,255,.14);
+    --serif:'Palatino Linotype','Book Antiqua',Palatino,Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:var(--sans); color:var(--ink);
+    background:linear-gradient(180deg,var(--top),var(--bot));
+    transition:background 1.4s linear,color 1.4s linear;
+    min-height:100dvh; overflow-x:hidden;
+    display:flex; flex-direction:column; align-items:center;
+    padding:max(18px,env(safe-area-inset-top)) 20px calc(72px + env(safe-area-inset-bottom));
+  }
+  /* soft stars for night */
+  .stars{
+    position:fixed; inset:0; pointer-events:none; opacity:0; transition:opacity 2s linear; z-index:0;
+    background-image:
+      radial-gradient(1.4px 1.4px at 12% 18%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 28% 42%, #fff, transparent),
+      radial-gradient(1px 1px at 46% 12%, #fff, transparent),
+      radial-gradient(1.6px 1.6px at 63% 30%, #fff, transparent),
+      radial-gradient(1px 1px at 78% 20%, #fff, transparent),
+      radial-gradient(1.3px 1.3px at 88% 46%, #fff, transparent),
+      radial-gradient(1px 1px at 36% 60%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 70% 64%, #fff, transparent),
+      radial-gradient(1px 1px at 18% 72%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 54% 78%, #fff, transparent);
+  }
+  main{position:relative; z-index:1; width:100%; max-width:460px; margin:auto 0;
+       display:flex; flex-direction:column; align-items:center; gap:min(5vh,34px)}
+
+  /* ---- top bar: location ---- */
+  .loc{display:flex; align-items:center; gap:8px; font-size:13px; letter-spacing:.02em;
+       color:var(--ink-soft); background:var(--card); border:1px solid var(--line);
+       padding:7px 10px 7px 13px; border-radius:999px; backdrop-filter:blur(6px)}
+  .loc .pin{opacity:.8}
+  .loc button{all:unset; cursor:pointer; display:grid; place-items:center; width:26px; height:26px;
+       border-radius:50%; color:var(--ink); background:rgba(255,255,255,.12)}
+  .loc button:active{transform:scale(.92)}
+  .loc button svg{width:14px; height:14px}
+  .loc.locating .spin{animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ---- sun / moon arc ---- */
+  .arc{width:min(300px,78vw); aspect-ratio:2/1}
+  .arc svg{width:100%; height:100%; overflow:visible}
+  .horizon{stroke:var(--ink-soft); stroke-width:1; opacity:.4}
+  .arcpath{fill:none; stroke:var(--ink-soft); stroke-width:1.25; opacity:.35; stroke-dasharray:3 5}
+  .orb-glow{filter:blur(7px); opacity:.85}
+
+  /* ---- hero temporal time ---- */
+  .face{display:flex; flex-direction:column; align-items:center; width:100%}
+  .hero{font-family:var(--serif); font-weight:500; line-height:.9;
+        font-size:clamp(74px,26vw,132px); letter-spacing:-.01em;
+        display:flex; align-items:baseline; gap:.12em}
+  .hero .sep{opacity:.5}
+  .hero .emo{font-size:.42em; transform:translateY(-.5em); -webkit-text-fill-color:initial}
+  .flabel{margin-top:12px; font-size:13.5px; letter-spacing:.06em; text-transform:uppercase;
+          color:var(--ink-soft); display:flex; align-items:center; gap:8px}
+
+  /* ---- relative readout ---- */
+  .rel{text-align:center; font-family:var(--serif); font-size:clamp(17px,5vw,21px); line-height:1.5}
+  .rel b{font-weight:600}
+  .rel .dim{color:var(--ink-soft)}
+
+  /* ---- moon line ---- */
+  .moon{display:flex; flex-direction:column; align-items:center; gap:0; width:100%}
+  .moon-row{display:flex; align-items:center; gap:9px; font-size:14.5px; color:var(--ink-soft);
+            cursor:pointer; padding:6px 4px}
+  .moon-row .me{font-size:19px; line-height:1}
+  .moon-row .chev{width:11px; height:11px; opacity:.6; transition:transform .3s ease}
+  .moon.open .chev{transform:rotate(180deg)}
+  .moon-detail{max-height:0; overflow:hidden; transition:max-height .4s ease,opacity .3s ease; opacity:0;
+               width:100%; display:flex; justify-content:center}
+  .moon.open .moon-detail{max-height:140px; opacity:1}
+  .moon-detail .inner{display:flex; gap:22px; margin-top:8px; padding:12px 18px;
+       background:var(--card); border:1px solid var(--line); border-radius:14px; backdrop-filter:blur(6px)}
+  .mstat{text-align:center}
+  .mstat .n{font-family:var(--serif); font-size:20px; font-weight:600}
+  .mstat .k{font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-soft); margin-top:3px}
+
+  /* ---- note affordance (ⓘ per face) ---- */
+  .info{all:unset; cursor:pointer; width:17px; height:17px; display:grid; place-items:center;
+        border:1px solid var(--line); border-radius:50%; font-size:11px; font-family:var(--serif);
+        color:var(--ink-soft); line-height:1}
+  .info:active{transform:scale(.9)}
+  .note{max-height:0; overflow:hidden; transition:max-height .45s ease,opacity .3s ease,margin .3s ease;
+        opacity:0; width:100%; max-width:380px}
+  .note.open{max-height:260px; opacity:1; margin-top:12px}
+  .note .inner{font-size:13px; line-height:1.6; color:var(--ink-soft); text-align:center;
+       background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px;
+       backdrop-filter:blur(6px)}
+  .note .inner b{color:var(--ink); font-weight:600}
+
+  /* ---- hidden real clock ---- */
+  .realwrap{position:fixed; left:0; right:0; bottom:calc(60px + env(safe-area-inset-bottom)); z-index:3;
+            display:flex; justify-content:center; pointer-events:none}
+  .realpill{pointer-events:auto; cursor:pointer; font-family:var(--serif);
+            background:var(--card); border:1px solid var(--line); backdrop-filter:blur(10px);
+            border-radius:999px; padding:9px 18px; display:flex; align-items:center; gap:9px;
+            color:var(--ink-soft); font-size:14px; letter-spacing:.03em; transition:opacity .5s ease}
+  .realpill .t{font-size:20px; color:var(--ink); font-variant-numeric:tabular-nums;
+               max-width:0; overflow:hidden; opacity:0; transition:max-width .4s ease,opacity .35s ease}
+  .realpill.show .t{max-width:120px; opacity:1}
+  .realpill.show .hint{display:none}
+  .realpill .clkico{width:14px; height:14px; opacity:.7}
+
+  .footer{position:fixed; bottom:calc(14px + env(safe-area-inset-bottom)); left:0; right:0; z-index:2;
+          text-align:center; font-size:11px; letter-spacing:.04em; color:var(--ink-soft); opacity:.55;
+          pointer-events:none}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+
+<main>
+  <div class="loc" id="loc">
+    <span class="pin">◉</span>
+    <span id="locText">locating…</span>
+    <button id="locBtn" title="Update location" aria-label="Update location">
+      <svg class="spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v4h-4"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="arc" id="arc">
+    <svg viewBox="0 0 200 100" aria-hidden="true">
+      <defs>
+        <radialGradient id="sunG"><stop offset="0" stop-color="#fff4d6"/><stop offset="1" stop-color="#ffb347"/></radialGradient>
+      </defs>
+      <line class="horizon" x1="2" y1="98" x2="198" y2="98"/>
+      <path class="arcpath" id="arcpath" d="M6 98 A 94 94 0 0 1 194 98"/>
+      <circle class="orb-glow" id="orbGlow" cx="6" cy="98" r="9" fill="url(#sunG)"/>
+      <text id="orbEmo" x="6" y="98" font-size="15" text-anchor="middle" dominant-baseline="central"></text>
+    </svg>
+  </div>
+
+  <!-- FACE A: temporal clock -->
+  <div class="face">
+    <div class="hero" id="hero"></div>
+    <div class="flabel">
+      <span id="flabel">—</span>
+      <button class="info" data-note="noteTemporal" aria-label="About temporal hours">i</button>
+    </div>
+    <div class="note" id="noteTemporal"><div class="inner">
+      <b>Temporal (seasonal) hours</b> — ancient Greek &amp; Roman. Daylight was split into 12 hours and night into 12, so an "hour" stretched in summer and shrank in winter. Here on the Aegean a summer daytime hour runs ~75&nbsp;min, a winter one ~45. Midday always begins the 7th hour; the 6th — <i>hora sexta</i> — gave us both <i>siesta</i> and <i>noon</i>.
+    </div></div>
+  </div>
+
+  <!-- FACE B: relative readout -->
+  <div class="face">
+    <div class="rel" id="rel"></div>
+    <div class="flabel" style="margin-top:14px">
+      <span>relative to the sun</span>
+      <button class="info" data-note="noteRel" aria-label="About relative hours">i</button>
+    </div>
+    <div class="note" id="noteRel"><div class="inner">
+      <b>Babylonian &amp; Italian hours.</b> Babylonian hours counted up from <i>sunrise</i>; Italian (and Bohemian) hours counted up from <i>sunset</i>, rolling over at sundown. Both read the day by its solar edges — the practical ancestor of this view, still echoed in Islamic prayer times and the Jewish <i>sha'ah zmanit</i>.
+    </div></div>
+  </div>
+
+  <!-- moon -->
+  <div class="moon" id="moon">
+    <div class="moon-row" id="moonRow">
+      <span class="me" id="moonEmo">🌕</span>
+      <span id="moonName">—</span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="moon-detail"><div class="inner">
+      <div class="mstat"><div class="n" id="moonRise">—</div><div class="k">next moonrise</div></div>
+      <div class="mstat"><div class="n" id="moonFull">—</div><div class="k">to full moon</div></div>
+      <div class="mstat"><div class="n" id="moonIll">—</div><div class="k">illuminated</div></div>
+    </div></div>
+  </div>
+</main>
+
+<div class="realwrap">
+  <div class="realpill" id="realPill">
+    <svg class="clkico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <span class="hint">clock</span><span class="t" id="realTime"></span>
+    <button class="info" data-note="noteReal" aria-label="About equal hours" style="margin-left:2px">i</button>
+  </div>
+</div>
+<div class="note" id="noteReal" style="position:fixed;bottom:calc(104px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:3;max-width:360px;padding:0 16px"><div class="inner">
+  <b>Equal (equinoctial) hours</b> — the modern fixed hour. Standardised once mechanical clocks arrived, because gears couldn't easily vary an hour's length. Convenient and universal, but detached from the actual sky.
+</div></div>
+
+<div class="footer">Horae v0.1.0 by @yillan_h</div>
+
+<script>
+"use strict";
+/* ============================================================
+   Horae — a sunrise/sunset anchored clock
+   All astronomy computed locally (SunCalc-derived) → fully offline.
+   ============================================================ */
+
+/* ---------- astronomy core (adapted from SunCalc, MIT) ---------- */
+const PI = Math.PI, rad = PI/180, dayMs = 86400000, J1970 = 2440588, J2000 = 2451545;
+const e = rad * 23.4397;                        // obliquity of the ecliptic
+
+const toJulian  = d => d.valueOf()/dayMs - 0.5 + J1970;
+const fromJulian= j => new Date((j + 0.5 - J1970)*dayMs);
+const toDays    = d => toJulian(d) - J2000;
+
+const rightAscension = (l,b)=>Math.atan2(Math.sin(l)*Math.cos(e)-Math.tan(b)*Math.sin(e),Math.cos(l));
+const declination    = (l,b)=>Math.asin(Math.sin(b)*Math.cos(e)+Math.cos(b)*Math.sin(e)*Math.sin(l));
+const azimuth        = (H,phi,dec)=>Math.atan2(Math.sin(H),Math.cos(H)*Math.sin(phi)-Math.tan(dec)*Math.cos(phi));
+const altitude       = (H,phi,dec)=>Math.asin(Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(H));
+const siderealTime   = (d,lw)=>rad*(280.16+360.9856235*d)-lw;
+
+const solarMeanAnomaly = d => rad*(357.5291+0.98560028*d);
+function eclipticLongitude(M){
+  const C = rad*(1.9148*Math.sin(M)+0.02*Math.sin(2*M)+0.0003*Math.sin(3*M));
+  return M + C + rad*102.9372 + PI;
+}
+function sunCoords(d){
+  const M = solarMeanAnomaly(d), L = eclipticLongitude(M);
+  return { dec: declination(L,0), ra: rightAscension(L,0) };
+}
+function getSunPosition(date,lat,lng){
+  const lw = rad*-lng, phi = rad*lat, d = toDays(date), c = sunCoords(d), H = siderealTime(d,lw)-c.ra;
+  return { altitude: altitude(H,phi,c.dec), azimuth: azimuth(H,phi,c.dec) };
+}
+const J0 = 0.0009;
+const julianCycle   = (d,lw)=>Math.round(d-J0-lw/(2*PI));
+const approxTransit = (Ht,lw,n)=>J0+(Ht+lw)/(2*PI)+n;
+const solarTransitJ = (ds,M,L)=>J2000+ds+0.0053*Math.sin(M)-0.0069*Math.sin(2*L);
+const hourAngle     = (h,phi,d)=>Math.acos((Math.sin(h)-Math.sin(phi)*Math.sin(d))/(Math.cos(phi)*Math.cos(d)));
+function getSetJ(h,lw,phi,dec,n,M,L){ return solarTransitJ(approxTransit(hourAngle(h,phi,dec),lw,n),M,L); }
+
+function getSunTimes(date,lat,lng){
+  const lw = rad*-lng, phi = rad*lat, d = toDays(date), n = julianCycle(d,lw),
+        ds = approxTransit(0,lw,n), M = solarMeanAnomaly(ds), L = eclipticLongitude(M),
+        dec = declination(L,0), Jnoon = solarTransitJ(ds,M,L), h0 = -0.833*rad,
+        Jset = getSetJ(h0,lw,phi,dec,n,M,L), Jrise = Jnoon-(Jset-Jnoon);
+  return { sunrise: fromJulian(Jrise), sunset: fromJulian(Jset), solarNoon: fromJulian(Jnoon) };
+}
+
+/* moon */
+function moonCoords(d){
+  const L = rad*(218.316+13.176396*d), M = rad*(134.963+13.064993*d), F = rad*(93.272+13.229350*d),
+        l = L+rad*6.289*Math.sin(M), b = rad*5.128*Math.sin(F), dt = 385001-20905*Math.cos(M);
+  return { ra: rightAscension(l,b), dec: declination(l,b), dist: dt };
+}
+function astroRefraction(h){ if(h<0)h=0; return 0.0002967/Math.tan(h+0.00312536/(h+0.08901179)); }
+function getMoonPosition(date,lat,lng){
+  const lw = rad*-lng, phi = rad*lat, d = toDays(date), c = moonCoords(d), H = siderealTime(d,lw)-c.ra;
+  let h = altitude(H,phi,c.dec); const az = azimuth(H,phi,c.dec); h += astroRefraction(h);
+  return { altitude: h, azimuth: az, distance: c.dist };
+}
+function getMoonIllumination(date){
+  const d = toDays(date), s = sunCoords(d), m = moonCoords(d), sdist = 149598000,
+        phi = Math.acos(Math.sin(s.dec)*Math.sin(m.dec)+Math.cos(s.dec)*Math.cos(m.dec)*Math.cos(s.ra-m.ra)),
+        inc = Math.atan2(sdist*Math.sin(phi), m.dist-sdist*Math.cos(phi)),
+        angle = Math.atan2(Math.cos(s.dec)*Math.sin(s.ra-m.ra),
+                           Math.sin(s.dec)*Math.cos(m.dec)-Math.cos(s.dec)*Math.sin(m.dec)*Math.cos(s.ra-m.ra));
+  return { fraction:(1+Math.cos(inc))/2, phase:0.5+0.5*inc*(angle<0?-1:1)/PI };
+}
+const hoursLater = (date,h)=>new Date(date.valueOf()+h*dayMs/24);
+function getMoonTimes(date,lat,lng){
+  const t = new Date(date); t.setHours(0,0,0,0);
+  const hc = 0.133*rad; let h0 = getMoonPosition(t,lat,lng).altitude-hc, rise, set, ye;
+  for(let i=1;i<=24;i+=2){
+    const h1 = getMoonPosition(hoursLater(t,i),lat,lng).altitude-hc,
+          h2 = getMoonPosition(hoursLater(t,i+1),lat,lng).altitude-hc,
+          a = (h0+h2)/2-h1, b = (h2-h0)/2, xe = -b/(2*a); ye = (a*xe+b)*xe+h1;
+    const d = b*b-4*a*h1; let roots=0,x1,x2;
+    if(d>=0){ const dx=Math.sqrt(d)/(Math.abs(a)*2); x1=xe-dx; x2=xe+dx;
+      if(Math.abs(x1)<=1)roots++; if(Math.abs(x2)<=1)roots++; if(x1<-1)x1=x2; }
+    if(roots===1){ if(h0<0)rise=i+x1; else set=i+x1; }
+    else if(roots===2){ rise=i+(ye<0?x2:x1); set=i+(ye<0?x1:x2); }
+    if(rise!==undefined&&set!==undefined)break; h0=h2;
+  }
+  const r={}; if(rise!==undefined)r.rise=hoursLater(t,rise); if(set!==undefined)r.set=hoursLater(t,set);
+  return r;
+}
+
+/* ---------- location ---------- */
+const LKEY = 'horae.loc.v1';
+let LOC = loadLoc();
+function loadLoc(){
+  try{ const s = JSON.parse(localStorage.getItem(LKEY)); if(s && isFinite(s.lat)) return s; }catch(_){}
+  return { lat:37.0, lng:25.0, auto:false };   // default: central Cyclades, Aegean
+}
+function saveLoc(){ try{ localStorage.setItem(LKEY, JSON.stringify(LOC)); }catch(_){} }
+function fmtCoord(v,pos,neg){ const h=v>=0?pos:neg; return Math.abs(v).toFixed(2)+'°'+h; }
+function renderLoc(){
+  const coords = fmtCoord(LOC.lat,'N','S')+'  '+fmtCoord(LOC.lng,'E','W');
+  locText.innerHTML = LOC.name
+    ? '<b style="color:var(--ink);font-weight:600">'+LOC.name+'</b>  ·  '+coords
+    : coords;
+}
+// resolve a human place name (needs network; degrades to coords offline / in sandbox)
+function resolveName(){
+  try{
+    fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+LOC.lat+'&longitude='+LOC.lng+'&localityLanguage=en')
+      .then(r=>r.ok?r.json():null).then(j=>{
+        if(!j) return;
+        const place = j.locality || j.city || j.principalSubdivision || j.countryName;
+        if(!place) return;
+        LOC.name = (j.countryCode && place!==j.countryName) ? place+', '+j.countryCode : place;
+        saveLoc(); renderLoc();
+      }).catch(()=>{});
+  }catch(_){}
+}
+function updateLocation(){
+  if(!navigator.geolocation){ return; }
+  loc.classList.add('locating');
+  navigator.geolocation.getCurrentPosition(p=>{
+    LOC = { lat:p.coords.latitude, lng:p.coords.longitude, auto:true };
+    saveLoc(); renderLoc(); resolveName(); invalidate(); drawAll();
+    loc.classList.remove('locating');
+  }, _=>{ loc.classList.remove('locating'); }, { enableHighAccuracy:false, timeout:10000, maximumAge:600000 });
+}
+
+/* ---------- day-times cache (recompute only when day/location changes) ---------- */
+let _cache = null;
+function invalidate(){ _cache = null; }
+function dayTimes(now){
+  const key = now.getFullYear()+'-'+now.getMonth()+'-'+now.getDate()+'@'+LOC.lat.toFixed(3)+','+LOC.lng.toFixed(3);
+  if(_cache && _cache.key===key) return _cache;
+  const today = getSunTimes(now,LOC.lat,LOC.lng),
+        prev  = getSunTimes(new Date(now.valueOf()-dayMs),LOC.lat,LOC.lng),
+        next  = getSunTimes(new Date(now.valueOf()+dayMs),LOC.lat,LOC.lng);
+  _cache = { key, sunrise:today.sunrise, sunset:today.sunset, noon:today.solarNoon,
+             prevSunset:prev.sunset, nextSunrise:next.sunrise };
+  return _cache;
+}
+
+/* ---------- temporal (seasonal) hours ---------- */
+function temporalTime(now){
+  const t = dayTimes(now), sr=t.sunrise, ss=t.sunset;
+  if(now>=sr && now<ss){
+    const len=(ss-sr)/12, h=(now-sr)/len;        // 0..12 of daylight
+    return { isDay:true, h, len, disp:h };         // dispHour 0..12
+  }
+  let start,end;
+  if(now>=ss){ start=ss; end=t.nextSunrise; } else { start=t.prevSunset; end=sr; }
+  const len=(end-start)/12, h=(now-start)/len;     // 0..12 of night
+  return { isDay:false, h, len, disp:12+h };        // dispHour 12..24
+}
+
+/* ---------- formatting ---------- */
+function fmtDur(ms){
+  const m = Math.max(0,Math.round(ms/60000)), h=Math.floor(m/60), mm=m%60;
+  return h ? (h+'h '+(mm<10?'0':'')+mm+'m') : (mm+'m');
+}
+const pad = n => (n<10?'0':'')+n;
+
+/* ---------- renderers ---------- */
+const hero=document.getElementById('hero'), flabel=document.getElementById('flabel'),
+      rel=document.getElementById('rel'), locText=document.getElementById('locText'),
+      loc=document.getElementById('loc');
+const ORD=['12th','1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th'];
+
+function renderTemporal(tt){
+  const hora = Math.min(12, Math.floor(tt.h)+1);          // 1..12 — hora prima = 1st hour
+  const M = Math.floor((tt.h-Math.floor(tt.h))*60);
+  const emo = tt.isDay ? '☀' : '☾';
+  hero.innerHTML = '<span class="emo">'+emo+'</span>'+hora+'<span class="sep">:</span>'+pad(M);
+  const ord = ORD[Math.min(12,Math.floor(tt.h)+1)];
+  const mins = Math.round(tt.len/60000);
+  flabel.textContent = ord+' '+(tt.isDay?'hour of day':'hour of night')+' · '+mins+'-min hour';
+}
+
+function renderRelative(now){
+  const t = dayTimes(now);
+  let past,pastLbl,next,nextLbl;
+  if(now < t.sunrise){ past=t.prevSunset; pastLbl='sunset'; next=t.sunrise; nextLbl='sunrise'; }
+  else if(now < t.sunset){ past=t.sunrise; pastLbl='sunrise'; next=t.sunset; nextLbl='sunset'; }
+  else { past=t.sunset; pastLbl='sunset'; next=t.nextSunrise; nextLbl='sunrise'; }
+  rel.innerHTML =
+    '<b>'+fmtDur(now-past)+'</b> <span class="dim">past '+pastLbl+'</span><br>'+
+    '<b>'+fmtDur(next-now)+'</b> <span class="dim">until '+nextLbl+'</span>';
+}
+
+/* sun / moon arc */
+const orbGlow=document.getElementById('orbGlow'), orbEmo=document.getElementById('orbEmo'),
+      arcpath=document.getElementById('arcpath');
+/* place an orb in the sky dome by its true altitude (height) + azimuth (east↔west) */
+function placeOrb(altDeg, azRad){
+  const fy = Math.max(0, Math.min(90, altDeg)) / 90;      // 0 horizon → 1 zenith
+  let fx = 0.5 + azRad/PI; fx = Math.max(0, Math.min(1, fx)); // east(−π/2)→0, south(0)→.5, west(+π/2)→1
+  return { x: 6 + fx*188, y: 98 - fy*92 };
+}
+function renderArc(tt, now, sunPos, moonEmoChar){
+  if(tt.isDay){
+    const p = placeOrb(sunPos.altitude*180/PI, sunPos.azimuth);
+    orbGlow.style.display=''; orbGlow.setAttribute('cx',p.x); orbGlow.setAttribute('cy',p.y);
+    orbEmo.textContent='';
+  } else {
+    orbGlow.style.display='none';
+    const m = getMoonPosition(now, LOC.lat, LOC.lng);
+    if(m.altitude > 0){                                   // only when the moon is actually up
+      const p = placeOrb(m.altitude*180/PI, m.azimuth);
+      orbEmo.setAttribute('x',p.x); orbEmo.setAttribute('y',p.y); orbEmo.textContent = moonEmoChar;
+    } else {
+      orbEmo.textContent='';                              // moon below horizon → empty sky
+    }
+  }
+}
+
+/* ---------- adaptive sky ---------- */
+const stars=document.getElementById('stars');
+const SKY=[ // altitude(deg), topRGB, botRGB, inkRGB
+  [-90,[16,16,28],[11,11,19],[236,235,245]],
+  [-18,[26,24,51],[36,33,61],[228,226,242]],
+  [-9 ,[48,46,82],[92,70,96],[236,230,242]],
+  [-3 ,[150,88,96],[236,150,112],[250,246,236]],
+  [0  ,[224,122,95],[246,200,130],[70,46,46]],
+  [5  ,[238,168,110],[255,226,172],[72,56,46]],
+  [10 ,[150,185,224],[214,232,246],[32,48,68]],
+  [35 ,[74,144,217],[170,212,245],[26,42,62]],
+  [90 ,[60,128,200],[192,224,250],[22,38,58]],
+];
+const lerp=(a,b,t)=>a+(b-a)*t;
+const mix=(a,b,t)=>[Math.round(lerp(a[0],b[0],t)),Math.round(lerp(a[1],b[1],t)),Math.round(lerp(a[2],b[2],t))];
+const css=c=>'rgb('+c[0]+','+c[1]+','+c[2]+')';
+function paintSky(altDeg){
+  let i=0; while(i<SKY.length-1 && altDeg>SKY[i+1][0]) i++;
+  const a=SKY[i], b=SKY[Math.min(i+1,SKY.length-1)];
+  const span=(b[0]-a[0])||1, t=Math.max(0,Math.min(1,(altDeg-a[0])/span));
+  const top=mix(a[1],b[1],t), bot=mix(a[2],b[2],t), ink=mix(a[3],b[3],t);
+  const r=document.documentElement.style;
+  r.setProperty('--top',css(top)); r.setProperty('--bot',css(bot)); r.setProperty('--ink',css(ink));
+  r.setProperty('--ink-soft','rgba('+ink[0]+','+ink[1]+','+ink[2]+',.62)');
+  const dark = altDeg<3;
+  r.setProperty('--card', dark?'rgba(255,255,255,.08)':'rgba(255,255,255,.26)');
+  r.setProperty('--line', dark?'rgba(255,255,255,.14)':'rgba(40,50,70,.18)');
+  stars.style.opacity = altDeg<-6 ? Math.min(1,(-6-altDeg)/8) : 0;
+  const meta=document.querySelector('meta[name=theme-color]'); if(meta) meta.setAttribute('content',css(top));
+}
+
+/* ---------- moon render ---------- */
+const MOON_EMO=['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+const MOON_NAME=['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous',
+                 'Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
+function moonEmoFor(phase){ return MOON_EMO[Math.round(phase*8)%8]; }
+function moonNameFor(phase){
+  const p=phase;
+  if(p<0.03||p>0.97) return 0; if(p<0.22) return 1; if(p<0.28) return 2; if(p<0.47) return 3;
+  if(p<0.53) return 4; if(p<0.72) return 5; if(p<0.78) return 6; return 7;
+}
+function renderMoon(now){
+  const ill = getMoonIllumination(now);
+  const idx = moonNameFor(ill.phase);
+  const emo = moonEmoFor(ill.phase);
+  document.getElementById('moonEmo').textContent = emo;
+  document.getElementById('moonName').textContent = MOON_NAME[idx];
+  // next moonrise: scan today, then forward up to 2 days
+  let rise=null;
+  for(let dOff=0; dOff<3 && !rise; dOff++){
+    const r = getMoonTimes(new Date(now.valueOf()+dOff*dayMs), LOC.lat, LOC.lng).rise;
+    if(r && r>now) rise=r;
+  }
+  document.getElementById('moonRise').textContent = rise ? 'in '+fmtDur(rise-now) : '—';
+  // days to full moon (phase 0.5)
+  const SYN=29.530588853;
+  let dPhase=(0.5-ill.phase); if(dPhase<=0) dPhase+=1;
+  const days = dPhase*SYN;
+  document.getElementById('moonFull').textContent = days<0.5 ? 'today' : Math.round(days)+'d';
+  document.getElementById('moonIll').textContent = Math.round(ill.fraction*100)+'%';
+  return emo;
+}
+
+/* ---------- main loop ---------- */
+let lastMoonMin=-1, lastMoonEmo='🌕';
+function drawAll(){
+  const now = new Date();
+  const pos = getSunPosition(now, LOC.lat, LOC.lng);
+  paintSky(pos.altitude*180/PI);
+  const tt = temporalTime(now);
+  renderTemporal(tt);
+  renderRelative(now);
+  // moon recompute once a minute (cheap enough, but no need per second)
+  const minKey = now.getHours()*60+now.getMinutes();
+  if(minKey!==lastMoonMin){ lastMoonMin=minKey; lastMoonEmo=renderMoon(now); }
+  renderArc(tt, now, pos, lastMoonEmo);
+  // real clock (only matters when visible, but cheap)
+  realTime.textContent = pad(now.getHours())+':'+pad(now.getMinutes());
+}
+
+/* ---------- visibility-aware ticking (battery/heat) ---------- */
+let iv=null;
+function startLoop(){ if(iv)return; drawAll(); iv=setInterval(drawAll,1000); }
+function stopLoop(){ if(iv){ clearInterval(iv); iv=null; } }
+document.addEventListener('visibilitychange',()=>{ document.hidden ? stopLoop() : (invalidate(),startLoop()); });
+
+/* ---------- interactions ---------- */
+// per-face context notes
+document.querySelectorAll('.info').forEach(btn=>{
+  btn.addEventListener('click',ev=>{
+    ev.stopPropagation();
+    const n=document.getElementById(btn.dataset.note), on=n.classList.contains('open');
+    document.querySelectorAll('.note.open').forEach(x=>x.classList.remove('open'));
+    if(!on) n.classList.add('open');
+  });
+});
+// moon expand
+const moonEl=document.getElementById('moon');
+document.getElementById('moonRow').addEventListener('click',()=>moonEl.classList.toggle('open'));
+
+// hidden real clock: reveal, auto-hide after 5s idle
+const realPill=document.getElementById('realPill'); let hideT=null;
+function showReal(){
+  realPill.classList.add('show');
+  clearTimeout(hideT);
+  hideT=setTimeout(()=>realPill.classList.remove('show'),5000);
+}
+realPill.addEventListener('click',e=>{
+  if(e.target.closest('.info')) return;         // info button handled separately
+  realPill.classList.contains('show') ? (realPill.classList.remove('show'),clearTimeout(hideT)) : showReal();
+});
+
+const realTime=document.getElementById('realTime');
+document.getElementById('locBtn').addEventListener('click',updateLocation);
+
+/* ---------- boot ---------- */
+renderLoc();
+resolveName();                          // try to name the current/cached coords
+startLoop();
+if(LOC.auto) updateLocation();          // refresh a previously-granted location
+else if(navigator.geolocation) updateLocation();  // first run: try once (prompts)
+
+// service worker (ignored silently in sandbox preview)
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>

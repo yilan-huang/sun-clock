@@ -1,0 +1,14 @@
+{
+  "name": "Horae — Sun Clock",
+  "short_name": "Horae",
+  "description": "A clock anchored to sunrise and sunset, after the ancient temporal hours.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1833",
+  "theme_color": "#1a1833",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

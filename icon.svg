@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2550"/>
+      <stop offset="1" stop-color="#e0875f"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fff4d6"/>
+      <stop offset="1" stop-color="#ffb347"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#sky)"/>
+  <!-- horizon -->
+  <line x1="96" y1="340" x2="416" y2="340" stroke="rgba(255,255,255,.5)" stroke-width="4"/>
+  <!-- half-risen sun -->
+  <clipPath id="above"><rect x="0" y="0" width="512" height="340"/></clipPath>
+  <g clip-path="url(#above)">
+    <circle cx="256" cy="340" r="92" fill="url(#sun)"/>
+    <g stroke="#ffd98a" stroke-width="10" stroke-linecap="round">
+      <line x1="256" y1="196" x2="256" y2="168"/>
+      <line x1="158" y1="242" x2="138" y2="222"/>
+      <line x1="354" y1="242" x2="374" y2="222"/>
+      <line x1="190" y1="300" x2="150" y2="290"/>
+      <line x1="322" y1="300" x2="362" y2="290"/>
+    </g>
+  </g>
+  <!-- small crescent moon -->
+  <g transform="translate(372,150)">
+    <circle r="34" fill="#f3f0ea"/>
+    <circle r="34" cx="14" cy="-6" fill="url(#sky)"/>
+  </g>
+</svg>

@@ -1,6 +1,6 @@
 /* Horae — service worker (offline caching) */
 const CACHE = 'horae-v0.1.0';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
+const ASSETS = ['./', './index.html', './history.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

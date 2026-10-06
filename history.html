@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ways the World Has Told Time</title>
+<style>
+  :root{
+    --bg:#f5efe3; --ink:#2b2622; --soft:#6f655a; --line:rgba(70,55,40,.16);
+    --card:rgba(255,255,255,.5); --accent:#b06a2c;
+    --serif:'Palatino Linotype','Book Antiqua',Palatino,Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg); color:var(--ink); font-family:var(--serif);
+       line-height:1.6; -webkit-font-smoothing:antialiased;
+       padding:max(20px,env(safe-area-inset-top)) 22px calc(60px + env(safe-area-inset-bottom))}
+  .wrap{max-width:720px; margin:0 auto}
+  .back{display:inline-flex; align-items:center; gap:7px; font-family:var(--sans); font-size:13px;
+        letter-spacing:.03em; color:var(--soft); text-decoration:none; margin-bottom:30px}
+  .back:hover{color:var(--ink)}
+  .eyebrow{font-family:var(--sans); font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+           color:var(--accent); margin-bottom:14px}
+  h1{font-size:clamp(34px,8vw,52px); font-weight:500; line-height:1.05; letter-spacing:-.01em; margin-bottom:18px}
+  .lede{font-size:clamp(17px,4.2vw,20px); color:#413a33; margin-bottom:8px}
+  .rule{border:0; border-top:1px solid var(--line); margin:34px 0}
+  h2{font-size:13px; font-family:var(--sans); font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+     color:var(--accent); margin:38px 0 16px}
+  h3{font-size:20px; font-weight:600; margin:26px 0 6px}
+  p{margin-bottom:12px}
+  ul{margin:6px 0 14px 2px; list-style:none}
+  li{position:relative; padding-left:18px; margin-bottom:7px}
+  li::before{content:'·'; position:absolute; left:4px; color:var(--accent); font-weight:700}
+  .soft{color:var(--soft)}
+  i,em{font-style:italic}
+  b,strong{font-weight:600}
+  a.cite{font-family:var(--sans); font-size:.68em; vertical-align:super; color:var(--accent);
+         text-decoration:none; margin-left:1px; line-height:0}
+  a.cite:hover{text-decoration:underline}
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; font-family:var(--sans)}
+  th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--soft); font-weight:600}
+  td:first-child{font-weight:600; color:#352f29; white-space:nowrap}
+  .tablewrap{overflow-x:auto; margin:0 -4px}
+  .metrics{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:26px 0 6px}
+  .metric{text-align:center; padding:14px 8px; background:var(--card); border:1px solid var(--line); border-radius:12px}
+  .metric .v{font-size:24px; font-weight:600; line-height:1}
+  .metric .k{font-family:var(--sans); font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--soft); margin-top:7px}
+  .metric .n{font-family:var(--sans); font-size:10px; color:var(--soft); margin-top:3px; opacity:.8}
+  footer{margin-top:46px; padding-top:18px; border-top:1px solid var(--line);
+         font-family:var(--sans); font-size:12px; color:var(--soft)}
+  @media(max-width:560px){ .metrics{grid-template-columns:repeat(2,1fr)} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="./index.html">← back to the clock</a>
+
+  <div class="eyebrow">A Horae field guide</div>
+  <h1>Ways the World Has Told Time</h1>
+  <p class="lede">One fault line runs through the whole history of the clock: hours that <em>stretch with the sun</em> versus hours that <em>stay fixed</em>. For most of recorded history people used temporal (seasonal, unequal) hours tied to sunrise and sunset — the system this clock revives. The equal hour we live by now is the newcomer, standardised only because machines could not easily keep anything else.</p>
+
+  <div class="metrics">
+    <div class="metric"><div class="v">24</div><div class="k">hours in a day</div><div class="n">Egypt, ~2000 BCE</div></div>
+    <div class="metric"><div class="v">60</div><div class="k">base of min &amp; sec</div><div class="n">Babylon</div></div>
+    <div class="metric"><div class="v">1793</div><div class="k">French decimal time</div><div class="n">lasted ~17 mo.</div></div>
+    <div class="metric"><div class="v">9.19B</div><div class="k">cycles = 1 sec</div><div class="n">caesium, since 1967</div></div>
+  </div>
+
+  <hr class="rule">
+
+  <h2>I. The great divide</h2>
+  <p><strong>Every system is one of two kinds.</strong> Either the hour flexes with daylight, or it is a fixed slice of the whole day.</p>
+  <ul>
+    <li><strong>Temporal / seasonal / unequal hours:</strong> daylight is cut into a fixed <em>count</em> of hours, so each hour grows in summer and shrinks in winter.</li>
+    <li><strong>Equal / equinoctial hours:</strong> the day is cut into a fixed <em>length</em> of hour, identical year-round — easy for gears, divorced from the sky.</li>
+    <li>Mechanical clocks are what tipped the world from the first to the second.</li>
+  </ul>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>System</th><th>Era / place</th><th>How the day was cut</th><th>Anchor</th></tr></thead>
+      <tbody>
+        <tr><td>Egyptian decans</td><td>~2000 BCE, Egypt</td><td>12 day + 12 night (unequal)</td><td>Star-risings / sun</td></tr>
+        <tr><td>Babylonian</td><td>~1800 BCE, Mesopotamia</td><td>12 beru (double-hours), base-60</td><td>Sunrise + watches</td></tr>
+        <tr><td>Greco-Roman temporal</td><td>Antiquity–medieval</td><td>12 day + 12 night, unequal</td><td>Sunrise → sunset</td></tr>
+        <tr><td>Chinese shíchén</td><td>Han onward</td><td>12 double-hours + 100 kè</td><td>Midnight start</td></tr>
+        <tr><td>Hindu / Vedic</td><td>Vedic onward</td><td>30 muhūrta (60 ghaṭī)</td><td>Sunrise → sunrise</td></tr>
+        <tr><td>Japanese Edo</td><td>1603–1872</td><td>6 day + 6 night, counted 9→4</td><td>Sunrise / sunset</td></tr>
+        <tr><td>Canonical hours</td><td>Medieval Christendom</td><td>7–8 prayer offices</td><td>Roman temporal hours</td></tr>
+        <tr><td>Babylonian / Italian hours</td><td>Medieval Europe</td><td>24 equal hours</td><td>From sunrise / sunset</td></tr>
+        <tr><td>French decimal</td><td>1793–1795</td><td>10 hr × 100 min × 100 sec</td><td>Midnight (metric)</td></tr>
+        <tr><td>Swatch .beat</td><td>1998–</td><td>1000 beats</td><td>Biel Mean Time, no zones</td></tr>
+        <tr><td>Ethiopian</td><td>In use today</td><td>12 day + 12 night</td><td>Dawn (≈6am = 0)</td></tr>
+        <tr><td>Modern UTC</td><td>1960s–</td><td>24 equal, 86,400 SI sec</td><td>Caesium atom + leap sec</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>II. Ancient foundations</h2>
+  <h3>Egypt: the first 24</h3>
+  <p>The 24-hour day is Egyptian. By the end of the third millennium BCE, priests divided the day using 36 star-groups called <em>decans</em>, 12 of which rose each night.<a class="cite" href="https://www.ancientworldmagazine.com/articles/water-clocks/" target="_blank" rel="noopener">1</a> From the late second millennium BCE, day and night were each reckoned as 12 hours — unequal, since daylight varies by season. Obelisks and shadow-clocks split the sunlit day; water clocks (the <em>clepsydra</em>) measured the night.<a class="cite" href="https://www.nist.gov/pml/time-and-frequency-division/popular-links/walk-through-time/walk-through-time-early-clocks" target="_blank" rel="noopener">2</a></p>
+  <h3>Babylon: base-60</h3>
+  <p>Our minutes and seconds are a Mesopotamian inheritance. Babylonian mathematics was <em>sexagesimal</em> (base-60); Hellenistic astronomers borrowed it to split the hour into 60.<a class="cite" href="https://www.ancientworldmagazine.com/articles/water-clocks/" target="_blank" rel="noopener">1</a> The day was also cut into 12 <em>beru</em> ("double-hours") of roughly two modern hours, and the night into watches. The same base-60 still rules clocks, compasses, and the 360° circle.</p>
+
+  <h2>III. Hours that breathe with the sun</h2>
+  <h3>Greco-Roman temporal hours — what this clock runs on</h3>
+  <p>Daylight was divided into 12 hours and night into 12, numbered from sunrise (0) to sunset (12), so an hour stretched and shrank with the season.<a class="cite" href="https://en.wikipedia.org/wiki/Roman_timekeeping" target="_blank" rel="noopener">3</a></p>
+  <ul>
+    <li>At Mediterranean latitude a daytime hour ran ~45 min at midwinter and ~75 min at midsummer.</li>
+    <li>The sun peaked at the end of the 6th hour; <em>hora sexta</em> gave us <em>siesta</em>.</li>
+    <li>The 9th hour, <em>nona</em>, drifted from mid-afternoon to midday and became our word <em>noon</em>.<a class="cite" href="https://www.etymonline.com/word/noon" target="_blank" rel="noopener">4</a></li>
+  </ul>
+  <h3>Japanese Edo time</h3>
+  <p>Japan kept temporal hours until 1872 and built clocks to match. Day and night were each split into six units (<em>futeijihō</em>), counted <em>down</em> 9→4 twice a day; the numbers 1–3 were reserved for Buddhist prayer strikes. <em>Wadokei</em> clocks used twin foliot balances to run at two speeds.<a class="cite" href="https://en.wikipedia.org/wiki/Japanese_clock" target="_blank" rel="noopener">5</a> The word for a snack, <em>oyatsu</em>, comes from <em>yatsu</em> ("eight") — the eighth-hour mid-afternoon break.</p>
+  <h3>Prayer-time hours</h3>
+  <p>Religious schedules preserved sun-anchored time long after astronomers moved on. The Christian canonical hours — prime (~6am), terce (~9am), sext (noon), none (~3pm), vespers — were the Roman temporal hours turned into prayer offices.<a class="cite" href="https://en.wikipedia.org/wiki/Canonical_hours" target="_blank" rel="noopener">6</a> Islamic <em>ṣalāt</em> ties five daily prayers to solar events; the Jewish proportional hour, <em>sha'ah zmanit</em> (day ÷ 12), is the same temporal maths, still used today.</p>
+  <h3>Counting from an edge</h3>
+  <p>Some systems kept equal-length hours but moved the zero point to a solar event — the practical cousin of this clock's "past sunrise / until sunset" readout. <strong>Babylonian hours</strong> counted up from sunrise; <strong>Italian (Bohemian) hours</strong> counted up from sunset. <strong>Ethiopia today</strong> uses a 12-hour clock counted from dawn, so ~6am = 0 and local 1:00 is our 7am — stable because the equator keeps days near-constant.<a class="cite" href="https://en.wikipedia.org/wiki/Time_in_Ethiopia" target="_blank" rel="noopener">7</a></p>
+
+  <h2>IV. The cyclical day-counts of Asia</h2>
+  <h3>Chinese double-hours</h3>
+  <p>China ran two systems at once: 12 <em>shíchén</em> (double-hours of ~2 hours), named for the zodiac Earthly Branches and starting at 11pm with the Rat; and the <em>kè</em> (刻) — 100 equal marks per day of ~14.4 minutes, a rare pre-modern decimal division.<a class="cite" href="https://en.wikipedia.org/wiki/Traditional_Chinese_timekeeping" target="_blank" rel="noopener">8</a> Night was split into five drum-and-bell watches (<em>gēng</em>).</p>
+  <h3>Hindu / Vedic units</h3>
+  <p>Indian timekeeping built a ladder from fractions of a second to the day, anchored at sunrise: 30 <em>muhūrta</em> of ~48 min each, running sunrise to sunrise.<a class="cite" href="https://en.wiktionary.org/wiki/Appendix:Hindu_units_of_measurement" target="_blank" rel="noopener">9</a> A <em>ghaṭī</em> (also <em>nāḍikā</em> / <em>daṇḍa</em>) ≈ 24 minutes, often kept by a sinking-bowl water clock; two ghaṭī = one muhūrta.</p>
+
+  <h2>V. The decimal rebellions</h2>
+  <h3>French Revolutionary time</h3>
+  <p>From 1793, revolutionary France decreed a 10-hour day, each hour 100 decimal minutes, each minute 100 decimal seconds — so noon fell at 5:00.<a class="cite" href="https://en.wikipedia.org/wiki/Decimal_time" target="_blank" rel="noopener">10</a> Mandatory for only ~17 months: people would not re-learn the day. Metric length and mass survived; metric time did not.</p>
+  <h3>Swatch Internet Time</h3>
+  <p>A 1998 revival: the day split into 1000 ".beats" of 86.4 seconds (@000–@999), one global time with no zones, zeroed on Biel Mean Time at Swatch's Swiss HQ (UTC+1).<a class="cite" href="https://en.wikipedia.org/wiki/Swatch_Internet_Time" target="_blank" rel="noopener">11</a> Pitched for coordinating online play across borders; now a nostalgic curiosity.</p>
+
+  <h2>VI. The modern machine</h2>
+  <h3>From sundial to mean time</h3>
+  <p>The sun itself does not keep steady time. <em>Apparent</em> solar time (a sundial) speeds and slows across the year; averaging it gives <em>mean</em> solar time, and the gap is the Equation of Time (up to ~16 min). GMT is mean solar time at Greenwich; time zones freeze it into ~15°-wide bands; sidereal time tracks the stars (a sidereal day ≈ 23h 56m).</p>
+  <h3>The atomic second &amp; UTC</h3>
+  <p>Since 1967 the second is defined by an atom, not the Earth: one SI second = 9,192,631,770 oscillations of the caesium-133 hyperfine transition.<a class="cite" href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time" target="_blank" rel="noopener">12</a> TAI is pure atomic time; UTC keeps it within 0.9s of the sun by inserting occasional <em>leap seconds</em>. This is the time on your phone and GPS — the baseline Horae converts back into sun-anchored hours.</p>
+
+  <h2>VII. For your experiment</h2>
+  <p><strong>Horae is a working Greco-Roman temporal clock,</strong> with the equinoctial and solar-offset systems kept as a reference layer. Living on it on a Greek island puts you back on the exact reckoning the Aegean used for two thousand years.</p>
+  <ul>
+    <li><strong>Main face</strong> = temporal hours (§III) — the sun-anchored, season-flexing hour.</li>
+    <li><strong>Equinoctial panel</strong> = equal hours from midnight (§VI) plus the Babylonian/Italian "from the sun" readout (§III).</li>
+    <li><strong>Ideas to borrow next:</strong> Japanese count-down numbering, Chinese zodiac double-hours, or an Ethiopian dawn-zeroed face.</li>
+  </ul>
+
+  <footer>
+    Sources: Ancient World Magazine, NIST, Wikipedia (Roman timekeeping, Canonical hours, Japanese clock, Traditional Chinese timekeeping, Decimal time, Swatch Internet Time, Time in Ethiopia, Coordinated Universal Time), Online Etymology Dictionary, Wiktionary. · Compiled for Horae.
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 /* Horae — service worker (offline caching) */
-const CACHE = 'horae-v0.1.0';
-const ASSETS = ['./', './index.html', './history.html', './manifest.webmanifest', './icon.svg'];
+const CACHE = 'horae-v0.1.1';
+const ASSETS = ['./', './index.html', './app.js', './history.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -16,8 +16,10 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  // network-first for navigations so updates show; fall back to cache offline
-  if (req.mode === 'navigate') {
+  // network-first for navigations and app.js so updates show; fall back to cache offline
+  const url = new URL(req.url);
+  const isAppJs = url.pathname.endsWith('/app.js');
+  if (req.mode === 'navigate' || isAppJs) {
     e.respondWith(
       fetch(req).then(res => {
         const copy = res.clone();
